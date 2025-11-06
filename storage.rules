@@ -1,0 +1,67 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Regras para imagens de perfil
+    match /profile-images/{userId}/{allPaths=**} {
+      // Usuários podem fazer upload e ler apenas suas próprias imagens de perfil
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Validar tipo de arquivo para imagens
+      allow write: if request.auth != null && 
+        request.auth.uid == userId &&
+        request.resource.contentType.matches('image/.*') &&
+        request.resource.size < 5 * 1024 * 1024; // Máximo 5MB
+    }
+    
+    // Regras para materiais de curso
+    match /course-materials/{courseId}/{allPaths=**} {
+      // Usuários autenticados podem ler materiais de curso
+      allow read: if request.auth != null;
+      
+      // Apenas professores podem fazer upload de materiais
+      allow write: if request.auth != null && 
+        exists(/databases/(default)/documents/users/$(request.auth.uid)) &&
+        get(/databases/(default)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+      
+      // Validar tamanho do arquivo (máximo 50MB)
+      allow write: if request.auth != null && 
+        request.resource.size < 50 * 1024 * 1024;
+      
+      // Apenas quem fez upload pode deletar
+      allow delete: if request.auth != null && 
+        resource.metadata.uploadedBy == request.auth.uid;
+    }
+    
+    // Regras para uploads de atividades dos alunos
+    match /student-uploads/{userId}/{allPaths=**} {
+      // Usuários podem fazer upload e ler apenas seus próprios arquivos
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Professores podem ler uploads dos alunos
+      allow read: if request.auth != null && 
+        exists(/databases/(default)/documents/users/$(request.auth.uid)) &&
+        get(/databases/(default)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+      
+      // Validar tamanho do arquivo (máximo 20MB)
+      allow write: if request.auth != null && 
+        request.auth.uid == userId &&
+        request.resource.size < 20 * 1024 * 1024;
+    }
+    
+    // Regras para arquivos temporários
+    match /temp/{userId}/{allPaths=**} {
+      // Usuários podem fazer upload temporário apenas em sua pasta
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Validar tamanho do arquivo (máximo 10MB)
+      allow write: if request.auth != null && 
+        request.auth.uid == userId &&
+        request.resource.size < 10 * 1024 * 1024;
+    }
+    
+    // Regras padrão - negar acesso a outros caminhos
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

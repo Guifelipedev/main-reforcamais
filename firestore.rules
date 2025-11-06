@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras para usuários
+    match /users/{userId} {
+      // Usuários podem ler e escrever apenas seus próprios dados
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Permitir criação de perfil durante registro
+      allow create: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Regras para cursos
+    match /courses/{courseId} {
+      // Todos os usuários autenticados podem ler cursos
+      allow read: if request.auth != null;
+      
+      // Apenas professores podem criar e editar cursos
+      allow create, update: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+      
+      // Apenas o criador do curso ou administradores podem deletar
+      allow delete: if request.auth != null && 
+        (resource.data.createdBy == request.auth.uid ||
+         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'admin'));
+    }
+    
+    // Regras para aulas
+    match /lessons/{lessonId} {
+      // Usuários autenticados podem ler aulas
+      allow read: if request.auth != null;
+      
+      // Apenas professores podem criar e editar aulas
+      allow create, update: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+      
+      // Apenas o criador da aula ou administradores podem deletar
+      allow delete: if request.auth != null && 
+        (resource.data.createdBy == request.auth.uid ||
+         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'admin'));
+    }
+    
+    // Regras para atividades
+    match /activities/{activityId} {
+      // Usuários podem ler e escrever apenas suas próprias atividades
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Permitir criação de atividade pelo próprio usuário
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      
+      // Professores podem ler todas as atividades de seus alunos
+      allow read: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+    }
+    
+    // Regras para progresso do usuário
+    match /userProgress/{progressId} {
+      // Usuários podem ler e escrever apenas seu próprio progresso
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Permitir criação de progresso pelo próprio usuário
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      
+      // Professores podem ler o progresso de todos os alunos
+      allow read: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+    }
+    
+    // Regras para materiais de curso
+    match /courseMaterials/{materialId} {
+      // Usuários autenticados podem ler materiais
+      allow read: if request.auth != null;
+      
+      // Apenas quem fez upload ou professores podem editar/deletar
+      allow update, delete: if request.auth != null && 
+        (request.auth.uid == resource.data.uploadedBy ||
+         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'teacher'));
+      
+      // Professores podem fazer upload de materiais
+      allow create: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+    }
+    
+    // Regras para inscrições em cursos
+    match /enrollments/{enrollmentId} {
+      // Usuários podem ler suas próprias inscrições
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Usuários podem se inscrever em cursos
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      
+      // Usuários podem cancelar suas próprias inscrições
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Professores podem ver todas as inscrições
+      allow read: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'teacher';
+    }
+    
+    // Regras padrão - negar acesso a outras coleções
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reforça+ - Plataforma de Estudos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-illustration">
+                <img src="images/login-illustration.svg" alt="Ilustração" class="illustration-img">
+                <h2>Bem-vindo ao Reforça+</h2>
+                <p>Sua plataforma completa de estudos e reforço escolar</p>
+            </div>
+            <div class="login-form">
+                <div class="form-header">
+                    <h1>Entrar</h1>
+                    <p>Acesse sua conta para continuar</p>
+                    <div class="demo-credentials" style="background: #e3f2fd; padding: 12px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #2196f3;">
+                        <h4 style="margin: 0 0 8px 0; color: #1976d2; font-size: 14px;">🚀 Credenciais de Demonstração:</h4>
+                        <p style="margin: 4px 0; font-size: 13px; color: #424242;"><strong>Email:</strong> demo@exemplo.com</p>
+                        <p style="margin: 4px 0; font-size: 13px; color: #424242;"><strong>Senha:</strong> demo123</p>
+                        <p style="margin: 8px 0 0 0; font-size: 12px; color: #666;">Outras opções: usuario@teste.com / teste123 ou admin@demo.com / admin123</p>
+                    </div>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" class="form-input" placeholder="Seu email" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="form-label">Senha</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" class="form-input" placeholder="Sua senha" required>
+                        </div>
+                        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                    </div>
+                    <div class="form-group">
+                        <label for="userType" class="form-label">Tipo de Usuário</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user-tag input-icon"></i>
+                            <select id="userType" class="form-input" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="student">Aluno</option>
+                                <option value="teacher">Professor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Entrar
+                    </button>
+                </form>
+                <div class="divider">ou continue com</div>
+                <div class="social-login">
+                    <button class="social-btn" id="googleLogin">
+                        <i class="fab fa-google"></i>
+                    </button>
+                    <button class="social-btn" id="facebookLogin">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="social-btn" id="appleLogin">
+                        <i class="fab fa-apple"></i>
+                    </button>
+                </div>
+                <div class="register-link">
+                    Não tem uma conta? <a href="#" id="registerLink">Cadastre-se</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <aside class="sidebar">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span class="logo-text">Reforça+</span>
+            </a>
+            <nav>
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="courses">
+                    <i class="fas fa-book nav-icon"></i>
+                    <span>Meus Cursos</span>
+                </a>
+                <a href="#" class="nav-item" data-page="activities">
+                    <i class="fas fa-tasks nav-icon"></i>
+                    <span>Atividades</span>
+                </a>
+                <a href="#" class="nav-item" data-page="calendar">
+                    <i class="fas fa-calendar-alt nav-icon"></i>
+                    <span>Calendário</span>
+                </a>
+                <a href="#" class="nav-item" data-page="performance">
+                    <i class="fas fa-chart-line nav-icon"></i>
+                    <span>Desempenho</span>
+                </a>
+                <a href="#" class="nav-item" data-page="messages">
+                    <i class="fas fa-comment-alt nav-icon"></i>
+                    <span>Mensagens</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog nav-icon"></i>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="user-avatar" id="userAvatar">
+                    <span>JS</span>
+                    <div class="notification-badge">3</div>
+                </div>
+            </header>
+            <div id="pageContent"></div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK v9 Compat (Versão Simplificada) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    
+    <!-- Firebase será inicializado via config.js -->
+    
+    <!-- Scripts da aplicação -->
+    <script src="js/config.js"></script>
+    <script src="js/firebase-integration.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/data-migration.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
