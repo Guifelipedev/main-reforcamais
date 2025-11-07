@@ -1,43 +1,31 @@
 {
-  "name": "reforca-plus",
-  "version": "1.0.0",
-  "description": "Plataforma educacional completa para estudos e reforço escolar",
-  "main": "index.html",
+  "name": "reforca-plus-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "python -m http.server 8000",
-    "serve": "npx http-server -p 8000 -c-1",
-    "build": "echo 'No build process needed for static files'",
-    "deploy:firebase": "firebase deploy",
-    "deploy:rules": "firebase deploy --only firestore:rules,storage",
-    "deploy:hosting": "firebase deploy --only hosting",
-    "init:firebase": "firebase init",
-    "login:firebase": "firebase login",
-    "test": "echo 'No tests specified'"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "education",
-    "learning",
-    "platform",
-    "firebase",
-    "javascript",
-    "html",
-    "css"
-  ],
-  "author": "Reforça+ Team",
-  "license": "MIT",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "firebase": "^12.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^6.26.2",
+    "vite": "^4.5.3"
+  },
   "devDependencies": {
-    "firebase-tools": "^12.0.0",
-    "http-server": "^14.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/seu-usuario/reforca-plus.git"
-  },
-  "bugs": {
-    "url": "https://github.com/seu-usuario/reforca-plus/issues"
-  },
-  "homepage": "https://github.com/seu-usuario/reforca-plus#readme",
-  "engines": {
-    "node": ">=14.0.0"
+    "@eslint/js": "^9.33.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "eslint": "^9.33.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0"
   }
 }
